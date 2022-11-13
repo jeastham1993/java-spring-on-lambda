@@ -1,0 +1,14 @@
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: us-east-1
+
+aws:
+  paramstore:
+    enabled: false
+
+spring:
+  application:
+    name: product-api
