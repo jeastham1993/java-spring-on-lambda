@@ -5,6 +5,17 @@ Globals:
   Function:
     Timeout: 30
 
+Parameters:
+  SecurityGroupId: 
+    Description: Security Group for the application
+    Type: String
+  Subnet1Id: 
+    Description: Subnet Id for the first subnet
+    Type: String
+  Subnet2Id: 
+    Description: Subnet Id for the second subnet
+    Type: String
+
 Resources:
   ProductApiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -14,12 +25,10 @@ Resources:
       Runtime: java11
       VpcConfig:
         SecurityGroupIds:
-          - sg-0c5e4cf758f50f3d2
+          - !Ref SecurityGroupId
         SubnetIds:
-          - subnet-0c54621be5522cd99
-          - subnet-0fb234133ae39a81c
-          - subnet-08f70228a9de0f8ae
-          - subnet-0329412f1d7b8548e
+          - !Ref Subnet1Id
+          - !Ref Subnet2Id
       Architectures:
         - x86_64
       MemorySize: 512

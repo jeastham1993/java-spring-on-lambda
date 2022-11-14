@@ -23,10 +23,10 @@ public class DatabaseStack extends Construct{
 
         DatabaseInstance dbInstance = new DatabaseInstance(this, "product-api-db", DatabaseInstanceProps.builder()
                 .vpc(stackProps.getVpc())
-                .databaseName("product-api-db")
+                .databaseName("productapi")
                 .allowMajorVersionUpgrade(true)
                 .backupRetention(Duration.days(0))
-                .instanceIdentifier("ProductApiInstance")
+                .instanceIdentifier("productapiinstance")
                 .vpcSubnets(SubnetSelection.builder().subnetType(SubnetType.PRIVATE_WITH_EGRESS).build())
                 .securityGroups(dbSecurityGroups)
                 .engine(DatabaseInstanceEngine.postgres(PostgresInstanceEngineProps.builder().version(PostgresEngineVersion.VER_14_4).build()))

@@ -7,6 +7,7 @@ public class AwsSecret {
     private String engine;
     private String port;
     private String dbInstanceIdentifier;
+    private String dbname;
 
     public String getUsername() {
         return username;
@@ -14,6 +15,10 @@ public class AwsSecret {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getDbname() {
+        return dbname;
     }
 
     public String getHost() {

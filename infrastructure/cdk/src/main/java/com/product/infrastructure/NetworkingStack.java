@@ -1,5 +1,7 @@
 package com.product.infrastructure;
 
+import software.amazon.awscdk.CfnOutput;
+import software.amazon.awscdk.CfnOutputProps;
 import software.amazon.awscdk.services.ec2.*;
 import software.constructs.Construct;
 
@@ -25,6 +27,21 @@ public class NetworkingStack extends Construct {
                         .vpc(vpc)
                         .allowAllOutbound(true)
                         .build());
+
+        CfnOutput appSgOutput = new CfnOutput(this, "app-sg-output", CfnOutputProps.builder()
+                .exportName("ApplicationSecurityGroupId")
+                .value(applicationSecurityGroup.getSecurityGroupId())
+                .build());
+
+        CfnOutput subnet1 = new CfnOutput(this, "app-subnet-1", CfnOutputProps.builder()
+                .exportName("Subnet1Id")
+                .value(vpc.getPrivateSubnets().get(0).getSubnetId())
+                .build());
+
+        CfnOutput subnet2 = new CfnOutput(this, "app-subnet-2", CfnOutputProps.builder()
+                .exportName("Subnet2Id")
+                .value(vpc.getPrivateSubnets().get(1).getSubnetId())
+                .build());
     }
 
     public Vpc getVpc() {

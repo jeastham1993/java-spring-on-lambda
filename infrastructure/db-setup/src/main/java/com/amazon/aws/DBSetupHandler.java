@@ -7,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import org.apache.commons.io.IOUtils;
 import software.amazon.lambda.powertools.parameters.ParamManager;
 import software.amazon.lambda.powertools.parameters.SecretsProvider;
+import software.amazon.lambda.powertools.parameters.transform.Transformer;
 
 import java.io.IOException;
 import java.sql.DriverManager;
@@ -24,7 +25,9 @@ public class DBSetupHandler implements RequestHandler<APIGatewayProxyRequestEven
     }
 
     public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-        AwsSecret secret = secretsProvider.get(SECRET_NAME, AwsSecret.class);
+        AwsSecret secret = secretsProvider
+                .withTransformation(Transformer.json)
+                .get(SECRET_NAME, AwsSecret.class);
 
         try(var connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, secret.getPassword())) {
             try(var statement = connection.createStatement()) {
