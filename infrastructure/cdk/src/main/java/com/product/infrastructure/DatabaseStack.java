@@ -77,7 +77,7 @@ public class DatabaseStack extends Construct{
                 .securityGroups(securityGroups)
                 .environment(new HashMap<String, String>() {{
                     put("SECRET_NAME", secret.getSecretName());
-                    put("DB_CONNECTION_URL", "jdbc:postgresql://" + database.getDbInstanceEndpointAddress() + ":5432/productdb");
+                    put("DB_CONNECTION_URL", "jdbc:postgresql://" + database.getDbInstanceEndpointAddress() + ":5432/productapi");
                     put("DB_USER", "postgres");
                 }})
                 .build();

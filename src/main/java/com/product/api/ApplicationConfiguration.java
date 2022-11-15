@@ -1,11 +1,6 @@
 package com.product.api;
 import com.google.gson.Gson;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.secretsmanager.SecretsManagerAsyncClient;
-import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
-import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 import software.amazon.awssdk.services.ssm.SsmClient;
 import software.amazon.awssdk.services.ssm.model.GetParameterRequest;
 import software.amazon.awssdk.services.ssm.model.GetParameterResponse;
@@ -28,13 +23,12 @@ public class ApplicationConfiguration {
     }
 
     private ApplicationProperties getProps() {
-        var parameterName = "/dev/spring-crud/properties";
+        var parameterName = System.getenv("CONFIG_PARAMETER_NAME");
+        if (parameterName == null || parameterName == "") {
+            return new ApplicationProperties();
+        }
 
-        var ssmClient = SsmClient
-                .builder()
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-                .region(Region.US_EAST_1)
-                .build();
+        var ssmClient = SsmClient.create();
 
         String parameter;
 

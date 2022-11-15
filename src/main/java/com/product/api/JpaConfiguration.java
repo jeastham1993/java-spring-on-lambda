@@ -27,25 +27,19 @@ public class JpaConfiguration {
 
         return DataSourceBuilder
                 .create()
-                .url("jdbc:postgresql://" + dbCredentials.getHost() + ":" + dbCredentials.getPort() + "/productdb")
+                .url("jdbc:postgresql://" + dbCredentials.getHost() + ":" + dbCredentials.getPort() + "/productapi")
                 .username(dbCredentials.getUsername())
                 .password(dbCredentials.getPassword())
                 .build();
     }
 
     private AwsSecret getSecret() {
-        var secretName = "product-db-cred";
-
-        var secretsManagerClient = SecretsManagerClient
-                .builder()
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-                .region(Region.US_EAST_1)
-                .build();
+        var secretsManagerClient = SecretsManagerClient.create();
 
         String secret;
 
         var getSecretValueRequest = GetSecretValueRequest.builder()
-                .secretId(secretName)
+                .secretId(System.getenv("SECRET_NAME"))
                 .build();
 
         GetSecretValueResponse result = null;
@@ -58,6 +52,7 @@ public class JpaConfiguration {
         }
         if (result.secretString() != null) {
             secret = result.secretString();
+            System.out.println(secret);
             return gson.fromJson(secret, AwsSecret.class);
         }
 
