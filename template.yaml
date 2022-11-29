@@ -35,6 +35,8 @@ Resources:
       Handler: com.product.api.StreamLambdaHandler::handleRequest
       Runtime: java11
       AutoPublishAlias: production
+      SnapStart:
+        ApplyOn: PublishedVersions
       VpcConfig:
         SecurityGroupIds:
           - !Ref SecurityGroupId
