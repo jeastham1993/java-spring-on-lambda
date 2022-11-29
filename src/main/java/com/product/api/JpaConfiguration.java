@@ -1,16 +1,16 @@
 package com.product.api;
 import com.google.gson.Gson;
+import org.crac.Core;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
@@ -21,16 +21,20 @@ import javax.sql.DataSource;
 @Configuration
 public class JpaConfiguration {
     private final Gson gson = new Gson();
+    public JpaConfiguration()
+    {
+    }
 
     public DataSource dataSource() {
         final AwsSecret dbCredentials = getSecret();
 
-        return DataSourceBuilder
-                .create()
-                .url("jdbc:postgresql://" + dbCredentials.getHost() + ":" + dbCredentials.getPort() + "/productapi")
-                .username(dbCredentials.getUsername())
-                .password(dbCredentials.getPassword())
-                .build();
+        var dataSource = new SimpleDriverDataSource();
+        dataSource.setDriverClass(org.postgresql.Driver.class);
+        dataSource.setUrl("jdbc:postgresql://" + System.getenv("DATABASE_ENDPOINT") + ":" + dbCredentials.getPort() + "/productapi");
+        dataSource.setUsername(dbCredentials.getUsername());
+        dataSource.setPassword(dbCredentials.getPassword());
+
+        return dataSource;
     }
 
     private AwsSecret getSecret() {
@@ -52,7 +56,6 @@ public class JpaConfiguration {
         }
         if (result.secretString() != null) {
             secret = result.secretString();
-            System.out.println(secret);
             return gson.fromJson(secret, AwsSecret.class);
         }
 
@@ -81,6 +84,4 @@ public class JpaConfiguration {
         lemfb.setPackagesToScan("com.product.api");
         return lemfb;
     }
-
-
 }

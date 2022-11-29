@@ -8,6 +8,7 @@ Globals:
       Variables:
         POWERTOOLS_SERVICE_NAME: ProductApi
         SECRET_NAME: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DatabaseSecretName}
+        DATABASE_ENDPOINT: !Ref DatabaseEndpoint
 
 Parameters:
   SecurityGroupId: 
@@ -21,6 +22,9 @@ Parameters:
     Type: String
   DatabaseSecretName:
     Description: The name of the secret holding database credentials
+    Type: String
+  DatabaseEndpoint:
+    Description: The endpoint of the database
     Type: String
 
 Resources:

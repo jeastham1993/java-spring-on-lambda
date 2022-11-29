@@ -10,7 +10,6 @@ import software.constructs.Construct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DatabaseStack extends Construct{
     public DatabaseStack(final Construct construct, final String id, DatabaseStackProps stackProps){
@@ -21,16 +20,16 @@ public class DatabaseStack extends Construct{
         ArrayList<ISecurityGroup> dbSecurityGroups = new ArrayList<ISecurityGroup>();
         dbSecurityGroups.add(createDatabaseSecurityGroup(stackProps.getVpc()));
 
-        DatabaseInstance dbInstance = new DatabaseInstance(this, "product-api-db", DatabaseInstanceProps.builder()
+        DatabaseInstance dbInstance = new DatabaseInstance(this, "product-api", DatabaseInstanceProps.builder()
                 .vpc(stackProps.getVpc())
                 .databaseName("productapi")
-                .allowMajorVersionUpgrade(true)
+                .allowMajorVersionUpgrade(false)
                 .backupRetention(Duration.days(0))
-                .instanceIdentifier("productapiinstance")
+                .instanceIdentifier("productapi")
                 .vpcSubnets(SubnetSelection.builder().subnetType(SubnetType.PRIVATE_WITH_EGRESS).build())
                 .securityGroups(dbSecurityGroups)
-                .engine(DatabaseInstanceEngine.postgres(PostgresInstanceEngineProps.builder().version(PostgresEngineVersion.VER_14_4).build()))
-                .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.SMALL))
+                .engine(DatabaseInstanceEngine.postgres(PostgresInstanceEngineProps.builder().version(PostgresEngineVersion.VER_13_7).build()))
+                .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.XLARGE2))
                 .credentials(Credentials.fromSecret(dbSecret))
                 .build());
 
@@ -39,6 +38,7 @@ public class DatabaseStack extends Construct{
         dbInstance.getConnections().allowFrom(stackProps.getApplicationSecurityGroup(), Port.tcp(5432));
 
         createDbSetupLambdaFunction(stackProps, dbInstance, dbSecret);
+
     }
 
     private SecurityGroup createDatabaseSecurityGroup(IVpc vpc) {

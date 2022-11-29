@@ -1,15 +1,15 @@
 package com.product.api;
 
 public class ApplicationProperties {
-    private String myApplicationProperty;
+    private String databaseEndpoint;
 
-    public String getMyApplicationProperty()
+    public String getDatabaseEndpoint()
     {
-        return myApplicationProperty;
+        return databaseEndpoint;
     }
 
     public void setMyApplicationProperty(String propertyValue)
     {
-        this.myApplicationProperty = propertyValue;
+        this.databaseEndpoint = propertyValue;
     }
 }

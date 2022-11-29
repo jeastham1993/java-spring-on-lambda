@@ -2,6 +2,8 @@ package com.product.api;
 
 import com.product.api.core.ProductDTO;
 import com.product.api.core.ProductService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,8 @@ import javax.validation.Valid;
 public class ProductController {
     private final ProductService productService;
     private final ApplicationProperties applicationProperties;
+
+    private static final Logger LOG = LogManager.getLogger();
 
     public ProductController(ProductService productService, ApplicationConfiguration configuration) {
         this.productService = productService;
@@ -26,7 +30,11 @@ public class ProductController {
 
     @GetMapping("/product")
     ResponseEntity<Iterable<ProductDTO>> listProducts() {
+        LOG.info("Received request to retrieve products");
+
         var productList = productService.ListProducts();
+
+        LOG.info("Product listing successful");
 
         return ResponseEntity.ok(productList);
     }

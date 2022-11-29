@@ -1,0 +1,53 @@
+name: "SAM Build & Deploy"
+description: "Build & Deploy SAM application"
+inputs:
+   aws-access-key:
+     required: true
+     description: "AWS Access Key"
+   aws-secret-key:
+     required: true
+     description: "AWS Secret Key"
+   aws-region:
+     required: true
+     description: "AWS Region"
+   template-file-path:
+     required: true
+     description: "Path to the SAM template file"
+   stack-name:
+     required: true
+     description: "The name of the CloudFormation stack to deploy"
+   s3-bucket-name:
+     required: true
+     description: "The name of the S3 bucket to store SAM artefacts"
+   security-group-id:
+     required: true
+     description: "The ID of the security group to use"
+   subnet-1-id:
+     required: true
+     description: "The ID of the first subnet to use"
+   subnet-2-id:
+     required: true
+     description: "The ID of the second subnet to use"
+   secret-name:
+     required: true
+     description: "The name of the secret holding the database credentials"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v2
+    - uses: actions/setup-java@v2
+      with:
+        java-version: 11
+    - uses: aws-actions/setup-sam@v1
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key }}
+        aws-secret-access-key: ${{ inputs.aws-secret-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+# Build and deploy ARM
+    - run: sam build -t ${{ inputs.template-file-path }}
+      shell: bash
+    - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name ${{inputs.stack-name}} --s3-prefix ${{inputs.stack-name}} --s3-bucket ${{ inputs.s3-bucket-name }} --capabilities CAPABILITY_IAM --parameter-overrides ParameterKey=SecurityGroupId,ParameterValue=${{ inputs.security-group-id }} ParameterKey=Subnet1Id,ParameterValue=${{ inputs.subnet-1-id }} ParameterKey=Subnet2Id,ParameterValue=${{ inputs.subnet-2-id }} ParameterKey=DatabaseSecretName,ParameterValue=${{ inputs.secret-name }}
+      shell: bash

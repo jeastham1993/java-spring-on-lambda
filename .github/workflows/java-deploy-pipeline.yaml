@@ -1,0 +1,24 @@
+name: JavaSamDeploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src
+jobs:
+
+  build-deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2  
+        - name: Build and Deploy
+          uses: ./.github/actions/sam-build-and-deploy
+          with:
+            aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+            template-file-path: ./template.yaml
+            stack-name: java-spring
+            s3-bucket-name: aws-sam-cli-managed-default-samclisourcebucket-1kgurv0ac87fw
