@@ -29,7 +29,7 @@ public class DatabaseStack extends Construct{
                 .vpcSubnets(SubnetSelection.builder().subnetType(SubnetType.PRIVATE_WITH_EGRESS).build())
                 .securityGroups(dbSecurityGroups)
                 .engine(DatabaseInstanceEngine.postgres(PostgresInstanceEngineProps.builder().version(PostgresEngineVersion.VER_13_7).build()))
-                .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.XLARGE2))
+                .instanceType(InstanceType.of(InstanceClass.T4G, InstanceSize.MICRO))
                 .credentials(Credentials.fromSecret(dbSecret))
                 .build());
 

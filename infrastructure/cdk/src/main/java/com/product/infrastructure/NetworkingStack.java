@@ -16,7 +16,6 @@ public class NetworkingStack extends Construct {
                 .ipAddresses(IpAddresses.cidr("10.0.0.0/16"))
                 .enableDnsHostnames(true)
                 .enableDnsSupport(true)
-                .natGateways(2)
                 .maxAzs(3)
                 .build());
 
